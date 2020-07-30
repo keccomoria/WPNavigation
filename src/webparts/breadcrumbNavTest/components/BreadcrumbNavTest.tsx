@@ -29,6 +29,7 @@ const itemsWithHref: IBreadcrumbItem[] = [
 ];
 
 export interface IBreadcrumbNavTestState {
+  breadcrumbItems: IBreadcrumbItem[];
   items: IDetailsListBasicItem[];
   columns: IColumn[];
 }
@@ -41,6 +42,7 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
       { key: 'Value', name: 'Value', fieldName: 'value', minWidth: 100, maxWidth: 200, isResizable: true },
     ];
     this.state = {
+      breadcrumbItems: [],
       items: [],
       columns: _columns
     };
@@ -54,8 +56,9 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
       ];
       // Populate with items for demos.
       let _allItems: IDetailsListBasicItem[] = this._getLinks();
+      let _breadcrumbItems: IBreadcrumbItem[] = this._getBreadCrumbItems();
 
-      this.setState({ items: _allItems, columns: _columns });
+      this.setState({ items: _allItems, columns: _columns, breadcrumbItems: _breadcrumbItems });
     }
     catch (error) {
       Logger.write(`componentDidMount - Error found Loading 'BreadcrumbNavTest' web part. Message: ${error.message}`, LogLevel.Error);
@@ -72,7 +75,7 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
           <div>
             <Label styles={labelStyles}>With items rendered as links</Label>
             <Breadcrumb
-              items={itemsWithHref}
+              items={this.state.breadcrumbItems}
               maxDisplayedItems={6}
               ariaLabel="Breadcrumb with items rendered as links"
               overflowAriaLabel="More links"
@@ -111,6 +114,11 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
 
   private _getLinks(): IDetailsListBasicItem[] {
     let results: IDetailsListBasicItem[] = this.props.getLinks();
+    return results;
+  }
+
+  private _getBreadCrumbItems(): IBreadcrumbItem[] {
+    let results: IBreadcrumbItem[] = this.props.getBreadCrumbItems();
     return results;
   }
 

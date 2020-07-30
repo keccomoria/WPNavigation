@@ -18,6 +18,7 @@ import {
   LogLevel
 } from "@pnp/logging";
 import { IDetailsListBasicItem, ISearchParams } from './components/IInterfaces';
+import { IBreadcrumbItem } from 'office-ui-fabric-react/lib/Breadcrumb';
 // subscribe a listener
 Logger.subscribe(new ConsoleListener());
 
@@ -45,6 +46,7 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
       BreadcrumbNavTest,
       {
         getLinks: this._getLinks.bind(this),
+        getBreadCrumbItems: this._getBreadCrumbItems.bind(this),
         displayMode: this.displayMode,
       }
     );
@@ -65,7 +67,7 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
   private getQueryParameters(url: string, filters?: string[]): ISearchParams[] {
     let params = new URLSearchParams(url);
     let paramObj: ISearchParams[] = [];
-    params.forEach(function (value, key) {
+    params.forEach((value, key) => {
       paramObj.push({ name: key, value: value });
     });
 
@@ -74,6 +76,68 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
     }
 
     return paramObj;
+  }
+
+  private _getBreadCrumbItems(): IBreadcrumbItem[] {
+    let items: IBreadcrumbItem[] = [];
+    let search: string = window.location.search;
+    let paramObj: ISearchParams[] = this.getQueryParameters(search, ["level1", "level2", "level3", "level4", "level5", "level6"]);
+    let queryParams: string[] = search.split('&');
+    let index: number = 0;
+
+    //set the navigation start level
+    let startNavigationHref = window.location.href.replace(window.location.search, "");
+    items.push({ key: "Home", text: "Home", href: startNavigationHref, isCurrentItem: false });
+
+    paramObj.forEach((searchParam) => {
+      let href: string = this._getQueryStringByLevel(queryParams, index);
+      items.push({ key: searchParam.name, text: searchParam.value, href: href, isCurrentItem: false });
+      index++;
+    });
+
+    //set the last breadcrumb as current navigation level
+    items[items.length - 1].isCurrentItem = true;
+
+    return items;
+  }
+
+  private _getQueryStringByLevel(queryParams: string[], index: number): string {
+    let queryStrings: string[] = [];
+
+    switch (index) {
+      case 0:
+        queryStrings.push(queryParams.filter(x => x.indexOf("level1") > -1).join('&'));
+        break;
+      case 1:
+        queryStrings.push(queryParams.filter(x => x.indexOf("level1") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level2") > -1).join('&'));
+        break;
+      case 2:
+        queryStrings.push(queryParams.filter(x => x.indexOf("level1") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level2") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level3") > -1).join('&'));
+        break;
+      case 3:
+        queryStrings.push(queryParams.filter(x => x.indexOf("level1") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level2") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level3") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level4") > -1).join('&'));
+        break;
+      case 4:
+        queryStrings.push(queryParams.filter(x => x.indexOf("level1") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level2") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level3") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level4") > -1).join('&'));
+        queryStrings.push(queryParams.filter(x => x.indexOf("level5") > -1).join('&'));
+        break;
+      case 5:
+        //last level, empty href
+        break;
+      default:
+        break;
+    }
+
+    return queryStrings.join("&");
   }
 
   private _getLinks(): IDetailsListBasicItem[] {
@@ -134,8 +198,7 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
     let index: number = 0;
     resultsFromSearch.forEach(element => {
       //TODO chiedere a marco il valore di level3type per servicing (da aggiornare excel)
-      let level3Type: string = level2 == "Medical Underwriting" ? "Category" :
-        level2 == "Servicing" ? "Servicing" : "Product"
+      let level3Type: string = level2 == "Medical Underwriting" ? "Category" : level2 == "Servicing" ? "Servicing" : "Product";
       items.push({
         key: index,
         name: element,
