@@ -1,5 +1,5 @@
 import { DisplayMode } from "@microsoft/sp-core-library";
-import { IDetailsListBasicItem } from "./IDetailsListBasicItem";
+import { IDetailsListBasicItem } from "./IInterfaces";
 
 export interface IBreadcrumbNavTestProps {
   getLinks: () => IDetailsListBasicItem[];

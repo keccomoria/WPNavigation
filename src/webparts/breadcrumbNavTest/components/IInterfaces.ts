@@ -3,3 +3,8 @@ export interface IDetailsListBasicItem {
   name: string;
   value: string;
 }
+
+export interface ISearchParams {
+  name: string;
+  value: string;
+}

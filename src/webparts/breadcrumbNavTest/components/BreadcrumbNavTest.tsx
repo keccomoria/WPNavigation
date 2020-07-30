@@ -8,7 +8,7 @@ import { DetailsList, DetailsListLayoutMode, IColumn } from 'office-ui-fabric-re
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { Logger, ConsoleListener, LogLevel } from "@pnp/logging";
-import { IDetailsListBasicItem } from './IDetailsListBasicItem';
+import { IDetailsListBasicItem } from './IInterfaces';
 
 // subscribe a listener
 Logger.subscribe(new ConsoleListener());
