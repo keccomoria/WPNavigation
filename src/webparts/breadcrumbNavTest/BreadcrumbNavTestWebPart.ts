@@ -47,6 +47,7 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
       {
         getLinks: this._getLinks.bind(this),
         getBreadCrumbItems: this._getBreadCrumbItems.bind(this),
+        _onBreadcrumbItemClicked: this._onBreadcrumbItemClicked.bind(this),
         displayMode: this.displayMode,
       }
     );
@@ -54,15 +55,16 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
     ReactDom.render(element, this.domElement);
   }
 
-  private getParameterByName(name: string, url: string): string {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, '\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-    var results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  }
+  // private getParameterByName(name: string, url: string): string {
+  //   if (!url) url = window.location.href;
+  //   name = name.replace(/[\[\]]/g, '\\$&');
+  //   var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  //   var results = regex.exec(url);
+  //   if (!results) return null;
+  //   if (!results[2]) return '';
+  //   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  // }
+
 
   private getQueryParameters(url: string, filters?: string[]): ISearchParams[] {
     let params = new URLSearchParams(url);
@@ -87,18 +89,25 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
 
     //set the navigation start level
     let startNavigationHref = window.location.href.replace(window.location.search, "");
-    items.push({ key: "Home", text: "Home", href: startNavigationHref, isCurrentItem: false });
+    items.push({ key: startNavigationHref, text: "Home", isCurrentItem: false });
 
     paramObj.forEach((searchParam) => {
       let href: string = this._getQueryStringByLevel(queryParams, index);
-      items.push({ key: searchParam.name, text: searchParam.value, href: href, isCurrentItem: false });
+      // items.push({ key: searchParam.name, text: searchParam.value, href: href, isCurrentItem: false, onClick: this._onBreadcrumbItemClicked });
+      items.push({ key: href, text: searchParam.value, isCurrentItem: false });
       index++;
     });
 
-    //set the last breadcrumb as current navigation level
+    // set the last breadcrumb as current navigation level
+    // and make it not clickable
     items[items.length - 1].isCurrentItem = true;
-
     return items;
+  }
+  
+  private _onBreadcrumbItemClicked(ev: React.MouseEvent<HTMLElement>, item: IBreadcrumbItem): void {
+    if (item.key) {
+      window.location.href = item.key;
+    }
   }
 
   private _getQueryStringByLevel(queryParams: string[], index: number): string {

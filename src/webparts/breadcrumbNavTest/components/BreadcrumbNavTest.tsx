@@ -4,7 +4,7 @@ import { Breadcrumb, IBreadcrumbItem } from 'office-ui-fabric-react/lib/Breadcru
 import { Label, ILabelStyles } from 'office-ui-fabric-react/lib/Label';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 import { ITextFieldStyles } from 'office-ui-fabric-react/lib/TextField';
-import { DetailsList, DetailsListLayoutMode, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
+import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from 'office-ui-fabric-react/lib/DetailsList';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { Logger, ConsoleListener, LogLevel } from "@pnp/logging";
@@ -51,6 +51,7 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
   public async componentDidMount() {
     try {
       let _columns: IColumn[] = [
+        { key: 'Name1', name: 'Name1', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true },
         { key: 'Name', name: 'Name', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true },
         { key: 'Value', name: 'Value', fieldName: 'value', minWidth: 100, maxWidth: 200, isResizable: true },
       ];
@@ -73,7 +74,6 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
         }
         {this.props.displayMode == 1 &&
           <div>
-            <Label styles={labelStyles}>With items rendered as links</Label>
             <Breadcrumb
               items={this.state.breadcrumbItems}
               maxDisplayedItems={6}
@@ -86,6 +86,7 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
                 columns={this.state.columns}
                 setKey="set"
                 layoutMode={DetailsListLayoutMode.justified}
+                selectionMode={SelectionMode.none}
                 selectionPreservedOnEmptyClick={true}
                 onRenderItemColumn={this._renderItemColumn.bind(this)}
                 ariaLabelForSelectionColumn="Toggle selection"
@@ -103,11 +104,10 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
     const fieldContent = item[column.fieldName as keyof IDetailsListBasicItem] as string;
     switch (column.key) {
       case 'Name':
-        // const fieldContent = item["name" as keyof IDetailsListBasicItem] as string;
         const fieldValue = item["value"] as string;
-        return <Link href={fieldValue} onClick={this._getLinks.bind(this)}>{fieldContent}</Link>;
+        // return <Link onClick={this._getLinks.bind(this)}>{fieldContent}</Link>;
+        return <Link data-interception="off" href={fieldValue}>{fieldContent}</Link>;
       default:
-        // const fieldContent = item["name" as keyof IDetailsListBasicItem] as string;
         return <span>{fieldContent}</span>;
     }
   }
@@ -119,7 +119,18 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
 
   private _getBreadCrumbItems(): IBreadcrumbItem[] {
     let results: IBreadcrumbItem[] = this.props.getBreadCrumbItems();
+
+    results.forEach(breadcrumbItem => {
+      breadcrumbItem.onClick = this._onBreadcrumbItemClicked.bind(this);
+    });
+
+    results[results.length - 1].onClick = null;
+
     return results;
+  }
+  
+  private _onBreadcrumbItemClicked(ev: React.MouseEvent<HTMLElement>, item: IBreadcrumbItem): void {
+    this.props._onBreadcrumbItemClicked(ev, item);
   }
 
 }
