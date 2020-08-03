@@ -123,12 +123,12 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
     results.forEach(breadcrumbItem => {
       breadcrumbItem.onClick = this._onBreadcrumbItemClicked.bind(this);
     });
-
+    // the last navigation item should be not clickable
     results[results.length - 1].onClick = null;
 
     return results;
   }
-  
+
   private _onBreadcrumbItemClicked(ev: React.MouseEvent<HTMLElement>, item: IBreadcrumbItem): void {
     this.props._onBreadcrumbItemClicked(ev, item);
   }
