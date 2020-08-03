@@ -55,17 +55,6 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
     ReactDom.render(element, this.domElement);
   }
 
-  // private getParameterByName(name: string, url: string): string {
-  //   if (!url) url = window.location.href;
-  //   name = name.replace(/[\[\]]/g, '\\$&');
-  //   var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-  //   var results = regex.exec(url);
-  //   if (!results) return null;
-  //   if (!results[2]) return '';
-  //   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  // }
-
-
   private getQueryParameters(url: string, filters?: string[]): ISearchParams[] {
     let params = new URLSearchParams(url);
     let paramObj: ISearchParams[] = [];
