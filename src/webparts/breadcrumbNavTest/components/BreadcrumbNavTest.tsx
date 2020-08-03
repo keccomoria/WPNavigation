@@ -37,14 +37,10 @@ export interface IBreadcrumbNavTestState {
 export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTestProps, IBreadcrumbNavTestState, {}> {
   constructor(props: IBreadcrumbNavTestProps) {
     super(props);
-    let _columns: IColumn[] = [
-      { key: 'Name', name: 'Name', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true },
-      { key: 'Value', name: 'Value', fieldName: 'value', minWidth: 100, maxWidth: 200, isResizable: true },
-    ];
     this.state = {
       breadcrumbItems: [],
       items: [],
-      columns: _columns
+      columns: []
     };
   }
 
