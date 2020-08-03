@@ -92,7 +92,7 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
     items[items.length - 1].isCurrentItem = true;
     return items;
   }
-  
+
   private _onBreadcrumbItemClicked(ev: React.MouseEvent<HTMLElement>, item: IBreadcrumbItem): void {
     if (item.key) {
       window.location.href = item.key;
@@ -195,8 +195,7 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
     let resultsFromSearch: string[] = this.fakeSearch3(level1, level2);
     let index: number = 0;
     resultsFromSearch.forEach(element => {
-      //TODO chiedere a marco il valore di level3type per servicing (da aggiornare excel)
-      let level3Type: string = level2 == "Medical Underwriting" ? "Category" : level2 == "Servicing" ? "Servicing" : "Product";
+      let level3Type: string = level2 == "Medical Underwriting" || level2 == "Servicing" ? "Category" : "Product";
       items.push({
         key: index,
         name: element,
