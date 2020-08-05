@@ -17,7 +17,7 @@ import {
   ConsoleListener,
   LogLevel
 } from "@pnp/logging";
-import { IDetailsListBasicItem, ISearchParams, IDetailsListContent } from './components/IInterfaces';
+import { IDetailsListBasicItem, ISearchParams, IDetailsListContent, IDetailsListDocumentItem } from './components/IInterfaces';
 import { IBreadcrumbItem } from 'office-ui-fabric-react/lib/Breadcrumb';
 // subscribe a listener
 Logger.subscribe(new ConsoleListener());
@@ -208,41 +208,75 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
 
   private getLinksLv3(level1: string, level2: string): IDetailsListContent {
     let detailsListContent: IDetailsListContent = { type: this.getTypeOfContentByLevel(3, level1, ""), content: null };
-    let items: IDetailsListBasicItem[] = [];
     let resultsFromSearch: string[] = this.fakeSearch3(level1, level2);
     let index: number = 0;
 
-    resultsFromSearch.forEach(element => {
-      let level3Type: string = level2 == "Medical Underwriting" || level2 == "Servicing" ? "Category" : "Product";
-      items.push({
-        key: index,
-        name: element,
-        value: `?level1=${level1}&level2=${level2}&level3=${element}&level3type=${level3Type}`
+    if (detailsListContent.type == 0) {
+      let items: IDetailsListBasicItem[] = [];
+      resultsFromSearch.forEach(element => {
+        let level3Type: string = level2 == "Medical Underwriting" || level2 == "Servicing" ? "Category" : "Product";
+        items.push({
+          key: index,
+          name: element,
+          value: `?level1=${level1}&level2=${level2}&level3=${element}&level3type=${level3Type}`
+        });
+        index++;
       });
-      index++;
-    });
+      detailsListContent.content = items;
+    }
+    else {
+      let items: IDetailsListDocumentItem[] = [];
+      resultsFromSearch.forEach(element => {
+        let level3Type: string = level2 == "Medical Underwriting" || level2 == "Servicing" ? "Category" : "Product";
+        let item: string[] = element.split("##");
 
-    detailsListContent.content = items;
+        items.push({
+          id: +item[0],
+          title: item[1],
+          fieldStr: item[2],
+          fieldInt: +item[3]
+        });
+        index++;
+      });
+      detailsListContent.content = items;
+    }
+
     return detailsListContent;
   }
 
   private getLinksLv4(level1: string, level2: string, level3: string, level3type: string): IDetailsListContent {
     let detailsListContent: IDetailsListContent = { type: this.getTypeOfContentByLevel(4, level1, level3type), content: null };
-    let items: IDetailsListBasicItem[] = [];
     let resultsFromSearch: string[] = this.fakeSearch4(level1, level2, level3, level3type);
     let index: number = 0;
 
-    resultsFromSearch.forEach(element => {
-      let level3Type: string = level2 == "Medical Underwriting" || level2 == "Servicing" ? "Category" : "Product";
-      items.push({
-        key: index,
-        name: element,
-        value: `?level1=${level1}&level2=${level2}&level3=${element}&level3type=${level3Type}`
+    if (detailsListContent.type == 0) {
+      let items: IDetailsListBasicItem[] = [];
+      resultsFromSearch.forEach(element => {
+        let level3Type: string = level2 == "Medical Underwriting" || level2 == "Servicing" ? "Category" : "Product";
+        items.push({
+          key: index,
+          name: element,
+          value: `?level1=${level1}&level2=${level2}&level3=${element}&level3type=${level3Type}`
+        });
+        index++;
       });
-      index++;
-    });
+      detailsListContent.content = items;
+    }
+    else {
+      let items: IDetailsListDocumentItem[] = [];
+      resultsFromSearch.forEach(element => {
+        let item: string[] = element.split("##");
+        items.push({
+          id: +item[0],
+          title: item[1],
+          fieldStr: item[2],
+          fieldInt: +item[3]
+        });
+        index++;
+      });
+      detailsListContent.content = items;
+    }
 
-    detailsListContent.content = items;
     return detailsListContent;
   }
 
@@ -316,11 +350,11 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
       case "EB - Existing Business/Servicing – Credit Control":
         return ["Document Type 1", "Document Type 2", "Document Type 3"];
       case "EB - New Business Active Quotes":
-        return ["0##Title 0##fieldStr 0##fieldInt 0", "1##Title 1##fieldStr 1##fieldInt 1"];
+        return ["0##Title 0##fieldStr 0##0", "1##Title 1##fieldStr 1##1"];
       case "EB - New Business Archive Quotes":
-        return ["2##Title 2##fieldStr 2##fieldInt 2", "3##Title 3##fieldStr 3##fieldInt 3", "4##Title 4##fieldStr 4##fieldInt 4"];
+        return ["2##Title 2##fieldStr 2##2", "3##Title 3##fieldStr 3##3", "4##Title 4##fieldStr 4##4"];
       case "EB - Business Development":
-        return ["5##Title 5##fieldStr 5##fieldInt 5", "6##Title 6##fieldStr 6##fieldInt 6"];
+        return ["5##Title 5##fieldStr 5##5", "6##Title 6##fieldStr 6##6"];
       case "EB - Documents in Transit":
         return ["WorkReference 1", "WorkReference 2", "WorkReference 3"];
       case "EB - Documents in Transit (deleted)":
@@ -344,19 +378,19 @@ export default class BreadcrumbNavTestWebPart extends BaseClientSideWebPart<IBre
         // for products
         return ["Claim Number - Claimant Name 1", "Claim Number - Claimant Name 2", "Claim Number - Claimant Name 3", "Claim Number - Claimant Name 4", "Claim Number - Claimant Name 5", "Claim Number - Claimant Name 6"];
       case "EB - Existing Business/Servicing – Credit Control":
-        return ["5##Title 5##fieldStr 5##fieldInt 5", "6##Title 6##fieldStr 6##fieldInt 6"];
+        return ["5##Title 5##fieldStr 5##5", "6##Title 6##fieldStr 6##6"];
       // case "EB - New Business Quotes":
       //   return ["DOCUMENT LIST"];
       // case "EB - Business Development":
       //   return ["DOCUMENT LIST"];
       case "EB - Documents in Transit":
-        return ["7##Title 7##fieldStr 7##fieldInt 7", "8##Title 8##fieldStr 8##fieldInt 8"];
+        return ["7##Title 7##fieldStr 7##7", "8##Title 8##fieldStr 8##8"];
       case "EB - Documents in Transit (deleted)":
-        return ["9##Title 9##fieldStr 9##fieldInt 9"];
+        return ["9##Title 9##fieldStr 9##9"];
       case "EB - Payment Letters":
         return ["Document Type 6", "Document Type 7", "Document Type 8"];
       case "EB - General Queries":
-        return ["9##Title 9##fieldStr 9##fieldInt 9"];
+        return ["9##Title 9##fieldStr 9##9"];
       default:
         break;
     }

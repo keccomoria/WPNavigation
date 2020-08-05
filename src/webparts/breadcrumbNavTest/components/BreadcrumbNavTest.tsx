@@ -48,22 +48,44 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
 
   public async componentDidMount() {
     try {
-      let _columns: IColumn[] = [
-        { key: 'Name1', name: 'Name1', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'Name', name: 'Name', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true },
-        { key: 'Value', name: 'Value', fieldName: 'value', minWidth: 100, maxWidth: 200, isResizable: true },
-      ];
+      // let _columns: IColumn[] = [
+      //   { key: 'Name1', name: 'Name1', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true },
+      //   { key: 'Name', name: 'Name', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true },
+      //   { key: 'Value', name: 'Value', fieldName: 'value', minWidth: 100, maxWidth: 200, isResizable: true },
+      // ];
+
       // Populate with items for demos.
       let _detailsListContent: IDetailsListContent = this._getLinks();
       let _allItems: IDetailsListBasicItem[] | IDetailsListDocumentItem[] = _detailsListContent.content;
       let _typeOfItems: number = _detailsListContent.type;
       let _breadcrumbItems: IBreadcrumbItem[] = this._getBreadCrumbItems();
+      let _columns: IColumn[] = this._getColumnsByTypeOfItems(_typeOfItems);
 
       this.setState({ items: _allItems, columns: _columns, breadcrumbItems: _breadcrumbItems, typeOfItems: _typeOfItems });
     }
     catch (error) {
       Logger.write(`componentDidMount - Error found Loading 'BreadcrumbNavTest' web part. Message: ${error.message}`, LogLevel.Error);
     }
+  }
+
+  private _getColumnsByTypeOfItems(typeOfItems: number): IColumn[] {
+    let _columns: IColumn[] = null;
+    switch (typeOfItems) {
+      case 0:
+        _columns = [{ key: 'Name', name: 'Name', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true }];
+        break;
+      case 1:
+        _columns = [
+          { key: 'Id', name: 'Id', fieldName: 'id', minWidth: 100, maxWidth: 200, isResizable: true },
+          { key: 'Title', name: 'Title', fieldName: 'title', minWidth: 100, maxWidth: 200, isResizable: true },
+          { key: 'FieldStr', name: 'FieldStr', fieldName: 'fieldStr', minWidth: 100, maxWidth: 200, isResizable: true },
+          { key: 'FieldInt', name: 'FieldInt', fieldName: 'fieldInt', minWidth: 100, maxWidth: 200, isResizable: true }
+        ];
+        break;
+      default:
+        break;
+    }
+    return _columns;
   }
 
   public render(): React.ReactElement<IBreadcrumbNavTestProps> {
