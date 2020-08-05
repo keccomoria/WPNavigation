@@ -8,7 +8,7 @@ import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from 'offi
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { Logger, ConsoleListener, LogLevel } from "@pnp/logging";
-import { IDetailsListBasicItem } from './IInterfaces';
+import { IDetailsListBasicItem, IDetailsListContent, IDetailsListDocumentItem } from './IInterfaces';
 
 // subscribe a listener
 Logger.subscribe(new ConsoleListener());
@@ -30,7 +30,8 @@ const itemsWithHref: IBreadcrumbItem[] = [
 
 export interface IBreadcrumbNavTestState {
   breadcrumbItems: IBreadcrumbItem[];
-  items: IDetailsListBasicItem[];
+  items: IDetailsListBasicItem[] | IDetailsListDocumentItem[];
+  typeOfItems: number;
   columns: IColumn[];
 }
 
@@ -40,6 +41,7 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
     this.state = {
       breadcrumbItems: [],
       items: [],
+      typeOfItems: 0,
       columns: []
     };
   }
@@ -52,10 +54,12 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
         { key: 'Value', name: 'Value', fieldName: 'value', minWidth: 100, maxWidth: 200, isResizable: true },
       ];
       // Populate with items for demos.
-      let _allItems: IDetailsListBasicItem[] = this._getLinks();
+      let _detailsListContent: IDetailsListContent = this._getLinks();
+      let _allItems: IDetailsListBasicItem[] | IDetailsListDocumentItem[] = _detailsListContent.content;
+      let _typeOfItems: number = _detailsListContent.type;
       let _breadcrumbItems: IBreadcrumbItem[] = this._getBreadCrumbItems();
 
-      this.setState({ items: _allItems, columns: _columns, breadcrumbItems: _breadcrumbItems });
+      this.setState({ items: _allItems, columns: _columns, breadcrumbItems: _breadcrumbItems, typeOfItems: _typeOfItems });
     }
     catch (error) {
       Logger.write(`componentDidMount - Error found Loading 'BreadcrumbNavTest' web part. Message: ${error.message}`, LogLevel.Error);
@@ -108,8 +112,8 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
     }
   }
 
-  private _getLinks(): IDetailsListBasicItem[] {
-    let results: IDetailsListBasicItem[] = this.props.getLinks();
+  private _getLinks(): IDetailsListContent {
+    let results: IDetailsListContent = this.props.getLinks();
     return results;
   }
 
@@ -128,5 +132,7 @@ export default class BreadcrumbNavTest extends React.Component<IBreadcrumbNavTes
   private _onBreadcrumbItemClicked(ev: React.MouseEvent<HTMLElement>, item: IBreadcrumbItem): void {
     this.props._onBreadcrumbItemClicked(ev, item);
   }
+
+  private _isDocumentList = (x: any): x is IDetailsListDocumentItem[] => true;
 
 }

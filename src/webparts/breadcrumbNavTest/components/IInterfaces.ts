@@ -1,7 +1,7 @@
 import { IContentTypeInfo } from "@pnp/sp/presets/all";
 
 export interface IDetailsListContent {
-  type: string;
+  type: number;
   content: IDetailsListBasicItem[] | IDetailsListDocumentItem[];
 }
 
@@ -14,10 +14,8 @@ export interface IDetailsListBasicItem {
 export interface IDetailsListDocumentItem {
   id: number;
   title: string;
-  fieldStr1: string;
-  fieldStr2: string;
-  fieldDt3: Date;
-  fieldInt4: number;
+  fieldStr: string;
+  fieldInt: number;
 }
 
 export interface ISearchParams {
